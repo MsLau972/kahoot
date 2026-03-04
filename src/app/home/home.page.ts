@@ -14,6 +14,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonButton,
+  IonButtons,
   IonLabel,
   IonIcon,
   IonItem,
@@ -40,6 +41,7 @@ import { AddQuizModalComponent } from './add-quiz.modal';
     IonCardTitle,
     IonCardContent,
     IonButton,
+    IonButtons,
     IonLabel,
     IonIcon,
     IonItem,
@@ -62,6 +64,10 @@ export class HomePage implements OnInit {
 
   goToQuizDetail(quiz: Quiz) {
     this.router.navigate(['/quiz', quiz.id]);
+  }
+
+  goToRegisterPage() {
+    this.router.navigate(['/login'])
   }
 
   async openAddQuizModal() {

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Firestore } from '@angular/fire/firestore';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -12,6 +13,7 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
+  private firestore: Firestore = inject(Firestore);
   private auth = getAuth();
 
   createUser(email: string, password: string): Promise<UserCredential> {

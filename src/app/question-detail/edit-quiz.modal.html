@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Modifier le quiz</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (submit)="save()">
+    <ion-input
+      label="Titre"
+      labelPlacement="stacked"
+      formControlName="title"
+      aria-describedby="title-error"
+    ></ion-input>
+    @if (form.get('title')?.invalid && form.get('title')?.touched) {
+    <div id="title-error" role="alert" class="error-text">
+      Le titre est obligatoire.
+    </div>
+    }
+    <ion-textarea
+      label="Description"
+      labelPlacement="stacked"
+      formControlName="description"
+    ></ion-textarea>
+
+    <div formArrayName="questions">
+      <ion-text color="medium">
+        <h2>Questions</h2>
+      </ion-text>
+
+      @for (question of questions.controls; track i; let i = $index) {
+      <div [formGroupName]="i" class="question-block">
+        <ion-text>
+          <h3>Question {{ i + 1 }}</h3>
+        </ion-text>
+
+        <ion-input
+          label="Question"
+          labelPlacement="stacked"
+          formControlName="text"
+        ></ion-input>
+
+        <ion-radio-group
+          formControlName="correctChoiceId"
+          aria-labelledby="question-{{ i }}"
+        >
+          <ion-list formArrayName="choices">
+            @for (choice of choices(i).controls; track j; let j = $index) {
+            <ion-item [formGroupName]="j">
+              <ion-radio
+                slot="start"
+                [value]="choice.get('id')?.value"
+                aria-label="Choix {{ j + 1 }}"
+              ></ion-radio>
+              <ion-input
+                id="choix-{{ j }}"
+                label="Choix {{ j + 1 }}"
+                labelPlacement="stacked"
+                formControlName="text"
+              ></ion-input>
+              <ion-button
+                slot="end"
+                fill="clear"
+                color="danger"
+                size="small"
+                type="button"
+                aria-label="Supprimer ce choix"
+                (click)="removeChoice(i, j)"
+                [disabled]="choices(i).length <= 1"
+              >
+                🗑️
+              </ion-button>
+            </ion-item>
+            }
+          </ion-list>
+        </ion-radio-group>
+
+        @if( question.get('correctChoiceId')?.invalid &&
+        question.get('correctChoiceId')?.touched) {
+        <div style="color: red">Vous devez sélectionner une bonne réponse.</div>
+        }
+
+        <ion-button type="button" size="small" (click)="addChoice(i)">
+          ➕ Ajouter un choix
+        </ion-button>
+      </div>
+      }
+    </div>
+
+    <ion-button type="button" expand="block" (click)="addQuestion()">
+      ➕ Ajouter une question
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      💾 Enregistrer
+    </ion-button>
+    @if(form.invalid){
+    <ion-text color="danger"> ⚠️ Le formulaire contient des erreurs. </ion-text>
+    }
+    <ion-button
+      expand="block"
+      fill="outline"
+      color="medium"
+      type="button"
+      (click)="close()"
+    >
+      Annuler
+    </ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Nouveau Quiz</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-input label="Titre" label-placement="stacked" [(ngModel)]="title">
+  </ion-input>
+
+  <ion-textarea
+    label="Description"
+    label-placement="stacked"
+    [(ngModel)]="description"
+  >
+  </ion-textarea>
+
+  <ion-button expand="block" (click)="addQuiz()"> Ajouter </ion-button>
+
+  <ion-button expand="block" fill="clear" (click)="close()">
+    Annuler
+  </ion-button>
+</ion-content>

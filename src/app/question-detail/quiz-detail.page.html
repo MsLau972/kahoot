@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/quizzes"
+        aria-label="Retour à la liste des quiz"
+      ></ion-back-button>
+    </ion-buttons>
+
+    <ion-title id="quiz-title"> {{ quiz?.title }} </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if(quiz?.description){
+  <ion-text color="medium">
+    <p>{{ quiz?.description }}</p>
+  </ion-text>
+  } @else{
+  <ion-text color="medium">
+    <p><em>Aucune description fournie.</em></p>
+  </ion-text>
+  }
+
+  <ion-text color="medium">
+    <p>{{ quiz?.questions?.length || 0 }} question(s)</p>
+  </ion-text>
+
+  @if(quiz?.questions?.length === 0){
+  <ion-item color="warning" role="status">
+    <ion-icon name="alert-circle" slot="start"></ion-icon>
+    <ion-label>Aucune question dans ce quiz.</ion-label> </ion-item
+  >}
+
+  <ion-list aria-labelledby="quiz-title">
+    @for (question of quiz?.questions ?? []; track question.id; let i = $index)
+    {
+
+    <ion-item lines="none" class="question-item">
+      <ion-label>
+        <h2>Question {{ i + 1 }}</h2>
+        <p>{{ question.text }}</p>
+
+        <ul class="choices-list">
+          @for (choice of question.choices; track choice.id) {
+          <li>{{ choice.text }}</li>
+          }
+        </ul>
+      </ion-label>
+    </ion-item>
+
+    }
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    color="primary"
+    type="button"
+    aria-label="Modifier le quiz"
+    (click)="openEditModal()"
+    [disabled]="!quiz"
+  >
+    ✏️ Modifier le quiz
+  </ion-button>
+</ion-content>

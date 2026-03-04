@@ -1,0 +1,75 @@
+ion-content {
+  --padding-top: 40px;
+  --padding-bottom: 20px;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.auth-title {
+  text-align: center;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #3880ff;
+}
+
+.auth-subtitle {
+  text-align: center;
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+ion-item {
+  margin-bottom: 15px;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+ion-button {
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+.error-message {
+  background-color: #f5e6e6;
+  padding: 12px !important;
+  border-radius: 6px;
+  border-left: 4px solid #ff3b30;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  background-color: #e6f5f0;
+  padding: 12px !important;
+  border-radius: 6px;
+  border-left: 4px solid #04d982;
+  margin-bottom: 20px;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+
+  p {
+    margin: 0;
+    font-size: 0.9em;
+  }
+
+  ion-button {
+    margin: 0;
+    padding: 0;
+    height: auto;
+  }
+}

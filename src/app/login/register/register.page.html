@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Créer un compte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="auth-container">
+    <h1 class="auth-title">Kahoute</h1>
+    <p class="auth-subtitle">Quiz & Apprentissage</p>
+
+    <form (ngSubmit)="register()">
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" [(ngModel)]="email" name="email" required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Mot de passe</ion-label>
+        <ion-input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Confirmer le mot de passe</ion-label>
+        <ion-input
+          type="password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-button expand="block" type="submit" class="ion-margin-top">
+        S'inscrire
+      </ion-button>
+    </form>
+
+    <ion-text color="danger" *ngIf="errorMessage">
+      <p class="ion-padding-top error-message">{{ errorMessage }}</p>
+    </ion-text>
+
+    <ion-text color="success" *ngIf="successMessage">
+      <p class="ion-padding-top success-message">{{ successMessage }}</p>
+    </ion-text>
+
+    <div class="auth-footer">
+      <p>
+        Vous avez déjà un compte?
+        <ion-button fill="clear" size="small" routerLink="/login">
+          Se connecter
+        </ion-button>
+      </p>
+    </div>
+  </div>
+</ion-content>

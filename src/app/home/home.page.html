@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title id="page-title">Liste des quiz</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-button
+    expand="block"
+    color="primary"
+    type="button"
+    aria-label="Ajouter un nouveau quiz"
+    (click)="openAddQuizModal()"
+  >
+    ➕ Ajouter un Quiz
+  </ion-button>
+
+  @if(quizzes.length === 0){<ion-item color="medium" role="status">
+    <ion-icon name="information-circle" slot="start"></ion-icon>
+    <ion-label>
+      Aucun quiz pour le moment. Cliquez sur “Ajouter un quiz” pour commencer.
+    </ion-label> </ion-item
+  >}
+
+  <ion-grid>
+    <ion-row>
+      @for (quiz of quizzes; track quiz.id) {
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card>
+          <ion-card-header
+            button
+            tabindex="0"
+            role="button"
+            aria-label="Voir le quiz {{ quiz.title }}"
+            (click)="goToQuizDetail(quiz)"
+            (keydown.enter)="goToQuizDetail(quiz)"
+          >
+            <ion-card-title>{{ quiz.title }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content> {{ quiz.description }} </ion-card-content>
+          <ion-button
+            fill="clear"
+            color="danger"
+            type="button"
+            aria-label="Supprimer le quiz {{ quiz.title }}"
+            (click)="deleteQuiz(quiz.id)"
+            >Supprimer</ion-button
+          >
+        </ion-card>
+      </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
+</ion-content>

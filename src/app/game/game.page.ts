@@ -65,6 +65,7 @@ export class GamePage implements OnInit {
   timer: any;
 
     startTimer() {
+    clearInterval(this.timer);
     this.timeLeft = 10;
 
     this.timer = setInterval(() => {
@@ -84,15 +85,26 @@ export class GamePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
-      const quizId = params.get('id');
-      if (quizId) {
-        this.quizService.get(quizId).subscribe((quiz) => {
-          this.quiz = quiz;
+  this.route.paramMap.subscribe((params) => {
+    const quizId = params.get('id');
+
+    if (quizId) {
+      this.quizService.get(quizId).subscribe((quiz) => {
+
+        this.quiz = quiz;
+
+        this.quiz.questions.forEach(q => {
+          q.choices = this.shuffleArray(q.choices);
         });
-      }
-    });
-    this.startTimer();
+
+        this.startTimer();
+      });
+    }
+  });
+}
+
+  shuffleArray(array: any[]) {
+    return array.sort(() => Math.random() - 0.5);
   }
 
   get currentQuestion(): Question | null {
@@ -153,6 +165,7 @@ export class GamePage implements OnInit {
     this.showResult = false;
     this.gameFinished = false;
     this.answers = [];
+    this.startTimer();
   }
 
   isAnswerCorrect(choice: Choice): boolean {

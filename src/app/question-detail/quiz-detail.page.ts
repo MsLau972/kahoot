@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular/standalone';
 
 import {
@@ -47,6 +47,7 @@ export class QuizDetailPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private quizService: QuizService,
     private modalCtrl: ModalController,
   ) {}
@@ -69,5 +70,11 @@ export class QuizDetailPage implements OnInit {
     modal.onDidDismiss().then(async () => {});
 
     await modal.present();
+  }
+
+  playGame() {
+    if (this.quiz?.id) {
+      this.router.navigate(['/game', this.quiz.id]);
+    }
   }
 }

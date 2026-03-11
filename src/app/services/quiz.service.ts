@@ -28,7 +28,7 @@ export class QuizService {
     >;
   }
 
-  get(quizId: string): Observable<Quiz | undefined> {
+  get(quizId: string): Observable<Quiz> {
   const quizDoc = doc(this.firestore, `quizzes/${quizId}`);
   return docData(quizDoc, { idField: 'id' }) as Observable<Quiz>;
 }

@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title id="page-title">{{ quiz.title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (quiz && !gameFinished) {
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <ion-progress-bar
+        type="determinate"
+        [value]="progress / 100"
+        class="progress-bar"
+      ></ion-progress-bar>
+      <div class="progress-text">
+        Question {{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}
+      </div>
+    </div>
+
+    <!-- Score -->
+    <div class="score-container">
+      <div class="score">
+        <strong>Score:</strong> {{ score }} / {{ quiz.questions.length }}
+      </div>
+    </div>
+
+    <!-- Question -->
+    @if (currentQuestion) {
+      <ion-card class="question-card">
+        <ion-card-header>
+          <ion-card-title>{{ currentQuestion.text }}</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-grid>
+            <ion-row>
+              @for (choice of currentQuestion.choices; track choice.id) {
+                <ion-col size="12" size-md="6">
+                  <ion-button
+                    expand="block"
+                    [color]="
+                      !showResult
+                        ? 'primary'
+                        : selectedAnswerId === choice.id &&
+                            isAnswerCorrect(choice)
+                          ? 'success'
+                          : selectedAnswerId === choice.id &&
+                              !isAnswerCorrect(choice)
+                            ? 'danger'
+                            : isAnswerCorrect(choice)
+                              ? 'success'
+                              : 'medium'
+                    "
+                    [disabled]="showResult"
+                    (click)="selectAnswer(choice)"
+                    [class.correct]="
+                      showResult && isAnswerCorrect(choice)
+                    "
+                    [class.incorrect]="
+                      showResult &&
+                      selectedAnswerId === choice.id &&
+                      !isAnswerCorrect(choice)
+                    "
+                  >
+                    {{ choice.text }}
+                  </ion-button>
+                </ion-col>
+              }
+            </ion-row>
+          </ion-grid>
+
+          <!-- Result Message -->
+          @if (showResult) {
+            <div class="result-message">
+              @if (selectedAnswerId && isSelectedAnswerCorrect()) {
+                <p class="correct-message">Bonne réponse!</p>
+              } @else {
+                <p class="incorrect-message">Mauvaise réponse!</p>
+                <p class="correct-answer">
+                  La bonne réponse est:
+                  {{ getCorrectAnswerText() }}
+                </p>
+              }
+            </div>
+
+            <!-- Next Button -->
+            <ion-button
+              expand="block"
+              color="primary"
+              (click)="nextQuestion()"
+              class="next-button"
+            >
+              @if (currentQuestionIndex < quiz.questions.length - 1) {
+                Question suivante
+              } @else {
+                Terminer
+              }
+            </ion-button>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
+  }
+
+  <!-- Game Finished Screen -->
+  @if (gameFinished) {
+    <div class="finish-container">
+      <ion-card class="result-card">
+        <ion-card-header>
+          <ion-card-title>Quiz Terminé! 🎉</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="final-score">
+            <h2>Votre score</h2>
+            <p class="big-score">{{ score }} / {{ quiz.questions.length }}</p>
+            <p class="percentage">
+              {{ ((score / (quiz.questions.length || 1)) * 100).toFixed(0) }}%
+            </p>
+          </div>
+
+          <div class="button-group">
+            <ion-button
+              expand="block"
+              color="primary"
+              (click)="restart()"
+              class="restart-button"
+            >
+                Recommencer
+            </ion-button>
+            <ion-button
+              expand="block"
+              color="medium"
+              (click)="goBack()"
+              class="back-button"
+            >
+                Retour à l'accueil
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  }
+</ion-content>

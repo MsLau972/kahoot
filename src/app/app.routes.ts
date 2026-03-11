@@ -16,11 +16,6 @@ export const routes: Routes = [
       import('./login/register/register.page').then((m) => m.RegisterPage),
   },
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-  {
     path: 'quiz/:id',
     loadComponent: () =>
       import('./question-detail/quiz-detail.page').then(
@@ -33,5 +28,15 @@ export const routes: Routes = [
       import('./question-detail/quiz-detail.page').then(
         (m) => m.QuizDetailPage,
       ),
+  },
+  {
+    path: 'game/:id',
+    loadComponent: () =>
+      import('./game/game.page').then((m) => m.GamePage),
+  },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
   },
 ];

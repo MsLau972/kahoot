@@ -54,6 +54,17 @@
 
   <ion-button
     expand="block"
+    color="success"
+    type="button"
+    aria-label="Lancer le jeu"
+    (click)="playGame()"
+    [disabled]="!quiz || !quiz.questions || quiz.questions.length === 0"
+  >
+    🎮 Lancer le jeu
+  </ion-button>
+
+  <ion-button
+    expand="block"
     color="primary"
     type="button"
     aria-label="Modifier le quiz"

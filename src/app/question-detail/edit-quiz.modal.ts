@@ -61,7 +61,7 @@ export class EditQuizModalComponent {
       title: [this.quiz.title, Validators.required],
       description: [this.quiz.description],
       questions: this.fb.array(
-        this.quiz.questions.map((q) => this.createQuestionForm(q)),
+        (this.quiz.questions || []).map((q) => this.createQuestionForm(q)),
       ),
     });
   }

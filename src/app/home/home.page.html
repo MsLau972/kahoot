@@ -2,9 +2,15 @@
   <ion-toolbar>
     <ion-title id="page-title">Liste des quiz</ion-title>
     <ion-buttons slot="end">
-      <ion-button fill="solid" (click)="goToRegisterPage()">
-        Se connecter
-      </ion-button>
+      @if(isLogged()) {
+        <ion-button fill="solid" (click)="signOut()">
+          Se déconnecter
+        </ion-button>
+      } @else {
+        <ion-button fill="solid" (click)="goToRegisterPage()">
+          Se connecter
+        </ion-button>
+      }
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

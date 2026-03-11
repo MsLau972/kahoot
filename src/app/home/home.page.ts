@@ -23,6 +23,7 @@ import {
 import { QuizService } from '../services/quiz.service';
 import { Quiz } from '../models/quiz';
 import { AddQuizModalComponent } from './add-quiz.modal';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-home',
@@ -51,6 +52,7 @@ export class HomePage implements OnInit {
   quizzes: Quiz[] = [];
 
   constructor(
+    private authService: AuthService,
     private quizService: QuizService,
     private modalCtrl: ModalController,
     private router: Router,
@@ -87,5 +89,13 @@ export class HomePage implements OnInit {
     this.quizService.getAll().subscribe((quizzes) => {
       this.quizzes = quizzes;
     });
+  }
+
+  isLogged() {
+    return this.authService.isConnected();
+  }
+
+  signOut() {
+    this.authService.signOut();
   }
 }

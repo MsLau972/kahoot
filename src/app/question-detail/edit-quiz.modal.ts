@@ -25,6 +25,7 @@ import {
 
 import { Quiz } from '../models/quiz';
 import { QuizService } from '../services/quiz.service';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-edit-quiz-modal',
@@ -54,6 +55,7 @@ export class EditQuizModalComponent {
     private modalCtrl: ModalController,
     private quizService: QuizService,
     private fb: FormBuilder,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -124,6 +126,18 @@ export class EditQuizModalComponent {
   }
 
   save() {
+    const user = this.authService.isConnected();
+    if (!user) {
+      alert("Vous devez être connecté pour modifier un quiz.");
+      return;
+    }
+
+    const isAuthor = this.quiz.authorId === user.uid;
+    const isAdmin = user.email === 'admin@example.com';
+    if (!isAuthor && !isAdmin) {
+      alert("Vous n'êtes pas autorisé à modifier ce quiz.");
+      return;
+    }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

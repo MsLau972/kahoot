@@ -90,9 +90,9 @@ export class GamePage implements OnInit {
 
     if (quizId) {
       this.quizService.get(quizId).subscribe((quiz) => {
-
+        
         this.quiz = quiz;
-
+        this.quiz.questions = this.shuffleArray(this.quiz.questions);
         this.quiz.questions.forEach(q => {
           q.choices = this.shuffleArray(q.choices);
         });

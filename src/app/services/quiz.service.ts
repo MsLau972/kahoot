@@ -29,28 +29,9 @@ export class QuizService {
   }
 
   get(quizId: string): Observable<Quiz | undefined> {
-    const quizDoc = doc(this.firestore, `quizzes/${quizId}`);
-
-    return docData(quizDoc, { idField: 'id' }).pipe(
-      switchMap((quiz: any) => {
-        if (!quiz) {
-          return of(undefined);
-        }
-
-        const questionsCollection = collection(
-          this.firestore,
-          `quizzes/${quizId}/questions`,
-        );
-
-        return collectionData(questionsCollection, { idField: 'id' }).pipe(
-          map((questions) => ({
-            ...quiz,
-            questions,
-          })),
-        );
-      }),
-    ) as Observable<Quiz>;
-  }
+  const quizDoc = doc(this.firestore, `quizzes/${quizId}`);
+  return docData(quizDoc, { idField: 'id' }) as Observable<Quiz>;
+}
 
   async addQuiz(quiz: Quiz): Promise<void> {
     const batch = writeBatch(this.firestore);
@@ -86,8 +67,8 @@ export class QuizService {
     return deleteDoc(quizDoc);
   }
 
-  updateQuiz(quiz: Quiz) {
-    const quizDoc = doc(this.firestore, `quizzes/${quiz.id}`);
-    return setDoc(quizDoc, quiz);
-  }
+updateQuiz(quiz: Quiz) {
+  const quizDoc = doc(this.firestore, `quizzes/${quiz.id}`);
+  return setDoc(quizDoc, quiz, { merge: true });
+}
 }

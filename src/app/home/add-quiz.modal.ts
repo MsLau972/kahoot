@@ -43,6 +43,7 @@ export class AddQuizModalComponent {
       title: this.title,
       description: this.description,
       questions: [],
+      authorId: this.quizService.getCurrentUserId() || '',
     });
 
     this.modalCtrl.dismiss();

@@ -12,6 +12,7 @@ import {
   setDoc,
   writeBatch,
 } from '@angular/fire/firestore';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class QuizService {
   private firestore: Firestore = inject(Firestore);
   private quizzesSubject = new BehaviorSubject<Quiz[]>([]);
   quizzes$ = this.quizzesSubject.asObservable();
+  authService: AuthService = inject(AuthService);
 
   getAll(): Observable<Quiz[]> {
     const quizzesCollection = collection(this.firestore, 'quizzes');
@@ -34,6 +36,9 @@ export class QuizService {
 }
 
   async addQuiz(quiz: Quiz): Promise<void> {
+    const user = this.authService.isConnected();
+    if (!user) throw new Error('Utilisateur non connecté');
+
     const batch = writeBatch(this.firestore);
     const quizzesCollection = collection(this.firestore, 'quizzes');
     const quizId = doc(quizzesCollection).id;
@@ -41,6 +46,7 @@ export class QuizService {
     batch.set(doc(quizzesCollection, quizId), {
       title: quiz.title,
       description: quiz.description,
+      authorId: user.uid,
     });
 
     quiz.questions.forEach((question) => {
@@ -71,4 +77,17 @@ updateQuiz(quiz: Quiz) {
   const quizDoc = doc(this.firestore, `quizzes/${quiz.id}`);
   return setDoc(quizDoc, quiz, { merge: true });
 }
+
+getCurrentUserId(): string | null {
+    const user = this.authService.isConnected();
+    return user ? user.uid : null;
+  }
+
+  canEditQuiz(quiz: Quiz): boolean {
+    const user = this.authService.isConnected();
+    if (!user) return false;
+    const isAdmin = user.email === 'admin@example.com';
+    const isAuthor = quiz.authorId === user.uid;
+    return isAdmin || isAuthor;
+  }
 }

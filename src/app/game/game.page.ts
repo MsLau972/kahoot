@@ -53,6 +53,7 @@ export class GamePage implements OnInit {
   title: '',
   questions: [],
   description: '',
+  authorId: '',
 };
   currentQuestionIndex: number = 0;
   score: number = 0;

@@ -20,6 +20,7 @@ import {
 import { QuizService } from '../services/quiz.service';
 import { Quiz } from '../models/quiz';
 import { EditQuizModalComponent } from './edit-quiz.modal';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-quiz-detail',
@@ -44,12 +45,12 @@ import { EditQuizModalComponent } from './edit-quiz.modal';
 export class QuizDetailPage implements OnInit {
   quiz?: Quiz;
   isEditing = false;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private quizService: QuizService,
     private modalCtrl: ModalController,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -60,6 +61,20 @@ export class QuizDetailPage implements OnInit {
   }
 
   async openEditModal() {
+
+    const user = this.authService.isConnected();
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const isAuthor = this.quiz?.authorId === user.uid;
+    const isAdmin = user.email === 'admin@example.com'; // ou custom claim admin
+    if (!isAuthor && !isAdmin) {
+      alert("Vous n'êtes pas autorisé à modifier ce quiz.");
+      return;
+    }
+
     const modal = await this.modalCtrl.create({
       component: EditQuizModalComponent,
       componentProps: {
@@ -73,8 +88,14 @@ export class QuizDetailPage implements OnInit {
   }
 
   playGame() {
-    if (this.quiz?.id) {
-      this.router.navigate(['/game', this.quiz.id]);
-    }
+    const user = this.authService.isConnected();
+  if (!user) {
+    this.router.navigate(['/login']); 
+    return;
+  }
+
+  if (this.quiz?.id) {
+    this.router.navigate(['/game', this.quiz.id]);
+  }
   }
 }

@@ -61,6 +61,22 @@ export class GamePage implements OnInit {
   gameFinished: boolean = false;
   answers: { questionId: number; selectedChoiceId: number; isCorrect: boolean }[] = [];
 
+  timeLeft: number = 10;
+  timer: any;
+
+    startTimer() {
+    this.timeLeft = 10;
+
+    this.timer = setInterval(() => {
+        this.timeLeft--;
+
+        if (this.timeLeft <= 0) {
+        clearInterval(this.timer);
+        this.showResult = true;
+        }
+    }, 1000);
+    }
+
   constructor(
     private quizService: QuizService,
     private route: ActivatedRoute,
@@ -76,6 +92,7 @@ export class GamePage implements OnInit {
         });
       }
     });
+    this.startTimer();
   }
 
   get currentQuestion(): Question | null {
@@ -118,6 +135,8 @@ export class GamePage implements OnInit {
       this.currentQuestionIndex++;
       this.selectedAnswerId = null;
       this.showResult = false;
+
+      this.startTimer();
     } else {
       this.gameFinished = true;
     }

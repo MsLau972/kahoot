@@ -16,6 +16,9 @@
         [value]="progress / 100"
         class="progress-bar"
       ></ion-progress-bar>
+      <div class="timer">
+        ⏱ {{ timeLeft }} s
+      </div>
       <div class="progress-text">
         Question {{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}
       </div>

@@ -26,6 +26,7 @@ import {
 import { QuizService } from '../services/quiz.service';
 import { Quiz } from '../models/quiz';
 import { AddQuizModalComponent } from './add-quiz.modal';
+import { JoinModalComponent } from './join.modal';
 import { AuthService } from '../services/auth';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
@@ -133,5 +134,17 @@ export class HomePage implements OnInit {
 
   signOut() {
     this.authService.signOut();
+  }
+
+  async openJoinModal() {
+    const modal = await this.modalCtrl.create({
+      component: JoinModalComponent,
+    });
+
+    modal.onDidDismiss().then(async () => {
+      this.quizService.getAll();
+    });
+
+    await modal.present();
   }
 }

@@ -44,7 +44,7 @@ export class GameService {
     await updateDoc(gameDoc, { started: true });
   }
 
-  async joinGame(gameId: string, playerName: string) {
+  async joinGame(gameId: string, playerName: string, playerUid?: string) {
     const gameDoc = doc(this.firestore, `games/${gameId}`);
     const snapshot = await getDoc(gameDoc);
     if (!snapshot.exists()) {
@@ -53,7 +53,7 @@ export class GameService {
 
     const game = snapshot.data() as any;
     const players = Array.isArray(game.players) ? [...game.players] : [];
-    players.push({ uid: '', name: playerName, score: 0 });
+    players.push({ uid: playerUid || '', name: playerName, score: 0 });
 
     await updateDoc(gameDoc, { players });
   }

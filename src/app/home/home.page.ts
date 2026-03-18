@@ -141,8 +141,10 @@ export class HomePage implements OnInit {
       component: JoinModalComponent,
     });
 
-    modal.onDidDismiss().then(async () => {
-      this.quizService.getAll();
+    modal.onDidDismiss().then((result: any) => {
+      if (result.data && result.data.success && result.data.gameId) {
+        this.router.navigate(['/lobby', result.data.gameId]);
+      }
     });
 
     await modal.present();

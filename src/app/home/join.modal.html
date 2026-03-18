@@ -7,14 +7,6 @@
 <ion-content class="ion-padding">
   <form [formGroup]="joinForm" (ngSubmit)="joinGame()">
     <ion-item>
-      <ion-label position="stacked">Votre nom</ion-label>
-      <ion-input formControlName="name" placeholder="Entrez votre nom"></ion-input>
-    </ion-item>
-    <div *ngIf="joinForm.get('name')?.touched && joinForm.get('name')?.invalid" style="color:red">
-      Le nom est obligatoire.
-    </div>
-
-    <ion-item>
       <ion-label position="stacked">Code PIN</ion-label>
       <ion-input formControlName="pin" placeholder="4 à 6 chiffres" type="number"></ion-input>
     </ion-item>

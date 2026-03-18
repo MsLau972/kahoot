@@ -37,7 +37,6 @@ export class JoinModalComponent {
   ) {
     this.joinForm = this.fb.group({
       pin: ['', [Validators.required, Validators.pattern(/^\d{4,6}$/)]],
-      name: ['', Validators.required]
     });
   }
 
@@ -47,16 +46,22 @@ export class JoinModalComponent {
       return;
     }
 
-    const { pin, name } = this.joinForm.value;
+    const user = this.authService.getUser();
+    if (!user) {
+      this.errorMessage = 'Vous devez être connecté pour rejoindre une partie.';
+      return;
+    }
+
+    const { pin } = this.joinForm.value;
 
     try {
-      const game = await this.gameService.findGameByPin(pin);
+      const game = await this.gameService.findGameByPin(pin.toString());
       if (!game) {
         this.errorMessage = 'Aucune partie trouvée avec ce code PIN.';
         return;
       }
 
-      await this.gameService.joinGame(game.id, name);
+      await this.gameService.joinGame(game.id, user.email || 'Joueur', user.uid);
 
       this.modalCtrl.dismiss({ success: true, gameId: game.id });
     } catch (err) {

@@ -67,19 +67,30 @@ export class GamePage implements OnInit {
   timeLeft: number = 10;
   timer: any;
 
-    startTimer() {
+  startTimer() {
     clearInterval(this.timer);
     this.timeLeft = 10;
 
     this.timer = setInterval(() => {
-        this.timeLeft--;
+      this.timeLeft--;
 
-        if (this.timeLeft <= 0) {
+      if (this.timeLeft <= 0) {
         clearInterval(this.timer);
-        this.showResult = true;
+        if (this.selectedAnswerId === null) {
+          this.answers.push({
+            questionId: this.currentQuestion!.id,
+            selectedChoiceId: -1,
+            isCorrect: false,
+          });
         }
+        this.showResult = true;
+
+        setTimeout(() => {
+          this.nextQuestion();
+        }, 2000);
+      }
     }, 1000);
-    }
+  }
 
   constructor(
     private quizService: QuizService,
@@ -90,23 +101,23 @@ export class GamePage implements OnInit {
   ) {}
 
   ngOnInit() {
-  this.route.paramMap.subscribe((params) => {
-    const quizId = params.get('id');
+    this.route.paramMap.subscribe((params) => {
+      const quizId = params.get('id');
 
-    if (quizId) {
-      this.quizService.get(quizId).subscribe((quiz) => {
-        
-        this.quiz = quiz;
-        this.quiz.questions = this.shuffleArray(this.quiz.questions);
-        this.quiz.questions.forEach(q => {
-          q.choices = this.shuffleArray(q.choices);
+      if (quizId) {
+        this.quizService.get(quizId).subscribe((quiz) => {
+          this.quiz = quiz;
+
+          this.quiz.questions = this.shuffleArray(this.quiz.questions);
+          this.quiz.questions.forEach(q => {
+            q.choices = this.shuffleArray(q.choices);
+          });
+
+          this.startTimer();
         });
-
-        this.startTimer();
-      });
-    }
-  });
-}
+      }
+    });
+  }
 
   shuffleArray(array: any[]) {
     return array.sort(() => Math.random() - 0.5);

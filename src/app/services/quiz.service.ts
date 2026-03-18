@@ -29,9 +29,9 @@ export class QuizService {
   }
 
   get(quizId: string): Observable<Quiz> {
-  const quizDoc = doc(this.firestore, `quizzes/${quizId}`);
-  return docData(quizDoc, { idField: 'id' }) as Observable<Quiz>;
-}
+    const quizDoc = doc(this.firestore, `quizzes/${quizId}`);
+    return docData(quizDoc, { idField: 'id' }) as Observable<Quiz>;
+  }
 
   async addQuiz(quiz: Quiz): Promise<void> {
     const batch = writeBatch(this.firestore);

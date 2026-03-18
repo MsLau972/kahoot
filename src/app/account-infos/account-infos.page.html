@@ -17,4 +17,27 @@
       <ion-text>{{userEmail}}</ion-text>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Statistiques</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        @for(score of (stats$ | async) || []; track score.id) {
+          <ion-item>
+            <ion-label>
+              Quiz: {{ score.quizTitle }} <br>
+              Score: {{score.score }} / {{ score.total }}
+            </ion-label>
+          </ion-item>
+        } @empty {
+          <ion-item>
+            <ion-label>Aucune statistique</ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

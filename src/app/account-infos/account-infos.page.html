@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button id="go-back-to-first-page" (click)="goBack()">Kahoot</ion-button>
+    </ion-buttons>
+    <ion-title>Informations du compte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Email</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-text>{{userEmail}}</ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Statistiques</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        @for(score of (stats$ | async) || []; track score.id) {
+          <ion-item>
+            <ion-label>
+              Quiz: {{ score.quizTitle }} <br>
+              Score: {{score.score }} / {{ score.total }}
+            </ion-label>
+          </ion-item>
+        } @empty {
+          <ion-item>
+            <ion-label>Aucune statistique</ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

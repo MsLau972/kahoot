@@ -23,6 +23,8 @@ import { QuizService } from '../services/quiz.service';
 import { Quiz } from '../models/quiz';
 import { Question } from '../models/question';
 import { Choice } from '../models/choice';
+import { StatsService } from '../services/stats-service';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-game',
@@ -81,6 +83,8 @@ export class GamePage implements OnInit {
 
   constructor(
     private quizService: QuizService,
+    private authService: AuthService,
+    private statsService: StatsService,
     private route: ActivatedRoute,
     private router: Router,
   ) {}
@@ -152,6 +156,17 @@ export class GamePage implements OnInit {
       this.startTimer();
     } else {
       this.gameFinished = true;
+
+      const user = this.authService.isConnected();
+      if (user) {
+        this.statsService.saveScore(
+          user.uid,
+          this.quiz.id,
+          this.quiz.title,
+          this.score,
+          this.quiz.questions.length
+        )
+      }
     }
   }
 

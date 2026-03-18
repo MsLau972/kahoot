@@ -3,9 +3,22 @@
     <ion-title id="page-title">Liste des quiz</ion-title>
     <ion-buttons slot="end">
       @if(isLogged()) {
-        <ion-button fill="solid" (click)="signOut()">
-          Se déconnecter
+        <ion-button id="profile-button">
+          <ion-avatar>
+            <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          </ion-avatar>
         </ion-button>
+
+        <ion-popover trigger="profile-button" [dismissOnSelect]="true">
+          <ng-template>
+            <ion-content>
+              <ion-list>
+                <ion-item [button]="true" [detail]="false" (click)="goToAccountInfos()">Profil</ion-item>
+                <ion-item [button]="true" [detail]="false" (click)="signOut()">Se déconnecter</ion-item>
+              </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
       } @else {
         <ion-button fill="solid" (click)="goToRegisterPage()">
           Se connecter

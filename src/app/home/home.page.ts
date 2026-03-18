@@ -18,6 +18,9 @@ import {
   IonLabel,
   IonIcon,
   IonItem,
+  IonList,
+  IonPopover,
+  IonAvatar, 
 } from '@ionic/angular/standalone';
 
 import { QuizService } from '../services/quiz.service';
@@ -46,6 +49,9 @@ import { AuthService } from '../services/auth';
     IonLabel,
     IonIcon,
     IonItem,
+    IonList,
+    IonPopover,
+    IonAvatar, 
   ],
 })
 export class HomePage implements OnInit {
@@ -70,6 +76,10 @@ export class HomePage implements OnInit {
 
   goToRegisterPage() {
     this.router.navigate(['/login'])
+  }
+
+  goToAccountInfos() {
+    this.router.navigate(['/account-infos']);
   }
 
   async openAddQuizModal() {

@@ -9,6 +9,8 @@ import {
   IonList,
   IonItem,
   IonButton,
+  IonBackButton,
+  IonButtons
 } from '@ionic/angular/standalone';
 import { GameService } from '../services/game.service';
 import { AuthService } from '../services/auth';
@@ -27,6 +29,8 @@ import { Observable } from 'rxjs';
     IonList,
     IonItem,
     IonButton,
+    IonButtons,
+    IonBackButton,
   ],
 })
 export class LobbyPage implements OnInit {
@@ -54,7 +58,7 @@ export class LobbyPage implements OnInit {
       this.players = game.players || [];
       this.isHost = game.hostUid === user?.uid;
       if (game.started) {
-        this.router.navigate(['/game', game.quizId, { gameId: this.gameId }]);
+        this.router.navigate(['/game', this.gameId]);
       }
     });
   }

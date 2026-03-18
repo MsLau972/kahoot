@@ -218,3 +218,19 @@ ion-button {
   }
 
 }
+
+.stat-bar-container {
+  background: #eee;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  height: 40px;
+  overflow: hidden;
+}
+
+.stat-bar {
+  height: 100%;
+  line-height: 40px;
+  color: #fff;
+  padding-left: 10px;
+  font-weight: bold;
+}

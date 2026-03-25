@@ -69,11 +69,20 @@ export class GameService {
     const game = snapshot.data() as any;
     const players = [...(game.players || [])];
 
-    players.push({
-      uid: playerUid || '',
-      name: playerName,
-      score: 0
-    });
+    const existingIndex = players.findIndex(p => p.uid === playerUid);
+    if (existingIndex !== -1) {
+      // Update name if changed, keep existing score (no duplicate)
+      players[existingIndex] = {
+        ...players[existingIndex],
+        name: playerName,
+      };
+    } else {
+      players.push({
+        uid: playerUid || '',
+        name: playerName,
+        score: 0,
+      });
+    }
 
     await updateDoc(gameDoc, { players });
   }

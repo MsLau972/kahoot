@@ -63,6 +63,8 @@ export class JoinModalComponent {
 
       await this.gameService.joinGame(game.id, user.email || 'Joueur', user.uid);
 
+      localStorage.setItem(`joinedGame_${game.id}`, 'true');
+
       this.modalCtrl.dismiss({ success: true, gameId: game.id });
     } catch (err) {
       console.error(err);

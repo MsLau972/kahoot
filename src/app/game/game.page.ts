@@ -70,6 +70,7 @@ export class GamePage implements OnInit {
   selectedAnswerId: number | null = null;
   score = 0;
   showResult = false;
+  playerRank: number | null = null;
 
   timeLeft = 10;
   timer: any;
@@ -179,8 +180,12 @@ export class GamePage implements OnInit {
           this.quiz.title,
           this.score,
           this.quiz.questions.length
-        )
+        );
       }
+
+      // Compute player rank before finishing
+      this.playerRank = this.computePlayerRank();
+
       this.game.finished = true;
       this.gameService.finishGame(this.game.id || '');
     }
@@ -242,5 +247,15 @@ export class GamePage implements OnInit {
 
   getTotalPlayers(): number {
     return this.game?.players?.length || 0;
+  }
+
+  private computePlayerRank(): number | null {
+    const user = this.authService.isConnected();
+    if (!user || !this.game?.players?.length) return null;
+
+    const sortedPlayers = [...this.game.players].sort((a: any, b: any) => b.score - a.score);
+    const rank = sortedPlayers.findIndex((p: any) => p.uid === user.uid);
+
+    return rank >= 0 ? rank + 1 : null;
   }
 }

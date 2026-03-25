@@ -150,7 +150,14 @@ export class GamePage implements OnInit {
   }
 
   nextQuestion() {
-    if (this.game.currentQuestionIndex < (this.quiz?.questions.length || 1) - 1 || 0) {
+    if (!this.quiz?.questions) {
+      return; // Quiz not loaded yet
+    }
+
+    const totalQuestions = this.quiz.questions.length;
+    const isLastQuestion = this.game.currentQuestionIndex >= totalQuestions - 1;
+
+    if (!isLastQuestion) {
       this.game.currentQuestionIndex++;
       this.selectedAnswerId = null;
       this.showResult = false;
@@ -158,8 +165,6 @@ export class GamePage implements OnInit {
       this.gameService.updateGameProgress(this.game.id || '', this.game.currentQuestionIndex);
       this.startTimer();
     } else {
-      this.game.finished = true;
-
       const user = this.authService.isConnected();
       if (user) {
         this.statsService.saveScore(
@@ -196,6 +201,10 @@ export class GamePage implements OnInit {
     this.selectedAnswerId = null;
     this.showResult = false;
     this.game.finished = false;
+    this.game.gamePhase = 'question';
+
+    // Reset game in database to sync state
+    this.gameService.resetGame(this.game.id || '');
 
     this.startTimer();
   }

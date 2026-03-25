@@ -137,4 +137,15 @@ export class GameService {
     const gameDoc = doc(this.firestore, `games/${gameId}`);
     await updateDoc(gameDoc, { currentQuestionIndex });
   }
+
+  async resetGame(gameId: string) {
+    if (!gameId) return;
+
+    const gameDoc = doc(this.firestore, `games/${gameId}`);
+    await updateDoc(gameDoc, { 
+      currentQuestionIndex: 0,
+      finished: false,
+      gamePhase: 'question'
+    });
+  }
 }

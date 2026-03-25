@@ -1,14 +1,40 @@
-.emoji-container {
+.reactions-container {
   position: fixed;
   bottom: 20px;
   left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   pointer-events: none;
 }
 
-.emoji {
-  font-size: 2rem;
-  margin-bottom: 5px;
+.reaction {
+  font-size: 24px;
   animation: floatUp 6s linear forwards;
+  position: relative;
+}
+
+.master {
+  font-size: 28px;
+  animation: floatUp 6s linear forwards;
+  position: relative;
+  color: gold;
+  text-shadow: 0 0 5px gold, 0 0 10px gold, 0 0 20px gold;
+}
+
+.master-center {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  animation: bigBoom 1s ease-out forwards;
+}
+
+@keyframes bigBoom {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
 }
 
 ion-fab-button {

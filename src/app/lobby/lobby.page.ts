@@ -15,6 +15,7 @@ import {
 import { GameService } from '../services/game.service';
 import { AuthService } from '../services/auth';
 import { Observable } from 'rxjs';
+import { EmojiReactionsComponent } from '../emoji-reaction/emoji-reaction.component';
 
 @Component({
   selector: 'app-lobby',
@@ -31,6 +32,7 @@ import { Observable } from 'rxjs';
     IonButton,
     IonButtons,
     IonBackButton,
+    EmojiReactionsComponent
   ],
 })
 export class LobbyPage implements OnInit {

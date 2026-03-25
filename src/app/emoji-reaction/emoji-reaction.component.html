@@ -1,17 +1,26 @@
-<!-- Bouton -->
+<!-- FAB bouton -->
 <ion-fab vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="sendReaction()">
     😄
   </ion-fab-button>
 </ion-fab>
 
-<!-- Emojis -->
-<div class="emoji-container">
+<!-- Overlay des emojis -->
+<div class="reactions-container">
   <div
     *ngFor="let r of reactions"
-    class="emoji"
+    class="reaction"
     [style.opacity]="getOpacity(r.timestamp)"
-  >
+    [style.transform]="'scale(' + getScale(r.combo || 1) + ')'"
+    >
     {{ r.emoji }}
-  </div>
+
+    <!-- MASTER EMOJI -->
+    <div *ngIf="r.masterEmoji" class="master">
+        {{ r.masterEmoji }}
+    </div>
+    <div *ngIf="r.bigEmoji" class="master-center">
+        {{ r.bigEmoji }}
+    </div>
+    </div>
 </div>

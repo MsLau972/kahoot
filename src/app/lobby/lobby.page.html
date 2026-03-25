@@ -20,4 +20,6 @@
   <ion-button *ngIf="isHost" expand="block" color="success" (click)="startGame()">
     Démarrer le jeu
   </ion-button>
+  <app-emoji-reactions [gameId]="gameId"></app-emoji-reactions>
+
 </ion-content>

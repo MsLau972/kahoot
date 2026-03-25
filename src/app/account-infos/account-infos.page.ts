@@ -3,16 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
   IonContent, 
-  IonHeader, 
-  IonTitle, 
-  IonToolbar, 
   IonText, 
   IonCardTitle, 
   IonCard, 
   IonCardContent, 
-  IonButton, 
   IonCardHeader, 
-  IonButtons,
   IonItem, 
   IonLabel, 
   IonList 
@@ -21,6 +16,7 @@ import { AuthService } from '../services/auth';
 import { Router } from '@angular/router';
 import { StatsService } from '../services/stats-service';
 import { Observable } from 'rxjs';
+import { TopBarComponent } from '../top-bar/top-bar.component';
 
 @Component({
   selector: 'app-account-infos',
@@ -29,21 +25,17 @@ import { Observable } from 'rxjs';
   standalone: true,
   imports: [
     IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
     CommonModule, 
     FormsModule, 
     IonText, 
     IonCardTitle, 
     IonCard, 
     IonCardContent, 
-    IonButton, 
     IonItem, 
     IonLabel, 
     IonList, 
     IonCardHeader, 
-    IonButtons
+    TopBarComponent,
   ]
 })
 export class AccountInfosPage implements OnInit {

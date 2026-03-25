@@ -1,11 +1,8 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Salle d'attente</ion-title>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-top-bar 
+  title="Salle d'attente"
+  [showBackButton]="true"
+  [showProfileButton]="true">
+</app-top-bar>
 
 <ion-content class="ion-padding">
   <h2>Code PIN: {{ pin }}</h2>

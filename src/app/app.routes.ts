@@ -31,6 +31,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'lobby/:gameId',
+    loadComponent: () => import('./lobby/lobby.page').then((m) => m.LobbyPage),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'game/:id',
     loadComponent: () => import('./game/game.page').then(m => m.GamePage),
     canActivate: [AuthGuard],

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { switchMap, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader,
@@ -17,6 +17,7 @@ import {
   IonButtons,
   IonBackButton,
   IonProgressBar,
+  IonIcon,
 } from '@ionic/angular/standalone';
 
 import { QuizService } from '../services/quiz.service';
@@ -24,7 +25,9 @@ import { Quiz } from '../models/quiz';
 import { Question } from '../models/question';
 import { Choice } from '../models/choice';
 import { StatsService } from '../services/stats-service';
+import { Game, GameService } from '../services/game.service';
 import { AuthService } from '../services/auth';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -47,116 +50,121 @@ import { AuthService } from '../services/auth';
     IonButtons,
     IonBackButton,
     IonProgressBar,
+    IonIcon,
   ],
 })
 export class GamePage implements OnInit {
-  quiz: Quiz = {
-  id: '',
-  title: '',
-  questions: [],
-  description: '',
-  authorId: '',
-};
-  currentQuestionIndex: number = 0;
-  score: number = 0;
-  selectedAnswerId: number | null = null;
-  showResult: boolean = false;
-  gameFinished: boolean = false;
-  answers: { questionId: number; selectedChoiceId: number; isCorrect: boolean }[] = [];
+  game: Game = {
+    id: '',
+    quizId: '',
+    pin: '',
+    currentQuestionIndex: 0,
+    gamePhase: 'question',
+    started: false,
+    finished: false,
+    hostUid: '',
+    players: [],
+  };
 
-  timeLeft: number = 10;
+  quiz!: Quiz;
+  selectedAnswerId: number | null = null;
+  score = 0;
+  showResult = false;
+
+  timeLeft = 10;
   timer: any;
 
-    startTimer() {
-    clearInterval(this.timer);
-    this.timeLeft = 10;
-
-    this.timer = setInterval(() => {
-        this.timeLeft--;
-
-        if (this.timeLeft <= 0) {
-        clearInterval(this.timer);
-        this.showResult = true;
-        }
-    }, 1000);
-    }
-
   constructor(
-    private quizService: QuizService,
-    private authService: AuthService,
-    private statsService: StatsService,
     private route: ActivatedRoute,
     private router: Router,
+    private quizService: QuizService,
+    private gameService: GameService,
+    private authService: AuthService,
+    private statsService: StatsService,
   ) {}
 
-  ngOnInit() {
-  this.route.paramMap.subscribe((params) => {
-    const quizId = params.get('id');
+ ngOnInit() {
+    this.game.id = this.route.snapshot.paramMap.get('id')!;
 
-    if (quizId) {
-      this.quizService.get(quizId).subscribe((quiz) => {
-        
-        this.quiz = quiz;
-        this.quiz.questions = this.shuffleArray(this.quiz.questions);
-        this.quiz.questions.forEach(q => {
-          q.choices = this.shuffleArray(q.choices);
-        });
-
-        this.startTimer();
-      });
-    }
-  });
-}
-
-  shuffleArray(array: any[]) {
-    return array.sort(() => Math.random() - 0.5);
+    this.gameService.getGame(this.game.id).pipe(
+      switchMap(game => {
+        if (!game) return of(null);
+        this.game = game;
+        this.game.gamePhase = game.gamePhase ?? 'question';
+        return this.quizService.get(game.quizId);
+      })
+    ).subscribe(quiz => {
+      this.quiz = quiz!;
+    });
+    if(!this.timer) {
+            this.startTimer();
+          }
   }
 
   get currentQuestion(): Question | null {
-    if (!this.quiz || this.currentQuestionIndex >= this.quiz.questions.length) {
-      return null;
-    }
-    return this.quiz.questions[this.currentQuestionIndex];
+    return this.quiz?.questions?.[this.game.currentQuestionIndex] ?? null;
   }
 
   get progress(): number {
     if (!this.quiz) return 0;
-    return ((this.currentQuestionIndex + 1) / this.quiz.questions.length) * 100;
+    return ((this.game.currentQuestionIndex + 1) / this.quiz.questions.length) * 100;
+  }
+
+  startTimer() {
+    clearInterval(this.timer);
+    this.timeLeft = 10;
+
+    this.timer = setInterval(() => {
+      this.timeLeft--;
+
+      if (this.timeLeft <= 0) {
+        clearInterval(this.timer);
+        this.finishQuestion();
+      }
+    }, 1000);
+  }
+
+  async finishQuestion() {
+    this.showResult = true;
+
+    // Calculate score based on final selected answer
+    if (this.selectedAnswerId !== null) {
+      const selectedChoice = this.currentQuestion?.choices.find(c => c.id === this.selectedAnswerId);
+      if (selectedChoice && this.isAnswerCorrect(selectedChoice)) {
+        this.score++;
+      }
+    }
+
+    const user = this.authService.isConnected();
+    if (user && this.selectedAnswerId !== null) {
+      await this.gameService.submitAnswer(this.game.id || '', user.uid, this.selectedAnswerId, this.score);
+    }
+
+    setTimeout(() => this.nextQuestion(), 4000);
   }
 
   selectAnswer(choice: Choice) {
-    if (this.showResult) return;
+    if (this.game.gamePhase !== 'question') return;
 
     this.selectedAnswerId = choice.id;
-    this.showResult = true;
-
-    const currentQuestion = this.currentQuestion;
-    if (currentQuestion) {
-      const isCorrect = choice.id === currentQuestion.correctChoiceId;
-      if (isCorrect) {
-        this.score++;
-      }
-
-      this.answers.push({
-        questionId: currentQuestion.id,
-        selectedChoiceId: choice.id,
-        isCorrect,
-      });
-    }
   }
 
   nextQuestion() {
-    if (!this.quiz) return;
+    if (!this.quiz?.questions) {
+      return; // Quiz not loaded yet
+    }
 
-    if (this.currentQuestionIndex < this.quiz.questions.length - 1) {
-      this.currentQuestionIndex++;
+    const totalQuestions = this.quiz.questions.length;
+    const isLastQuestion = this.game.currentQuestionIndex >= totalQuestions - 1;
+
+    if (!isLastQuestion) {
+      this.game.currentQuestionIndex++;
       this.selectedAnswerId = null;
       this.showResult = false;
 
+      this.gameService.updateGameProgress(this.game.id || '', this.game.currentQuestionIndex);
       this.startTimer();
     } else {
-      this.gameFinished = true;
-
       const user = this.authService.isConnected();
       if (user) {
         this.statsService.saveScore(
@@ -167,40 +175,65 @@ export class GamePage implements OnInit {
           this.quiz.questions.length
         )
       }
+      this.game.finished = true;
+      this.gameService.finishGame(this.game.id || '');
     }
+  }
+
+  isAnswerCorrect(choice: Choice): boolean {
+    return choice.id === this.currentQuestion?.correctChoiceId;
+  }
+
+  isSelectedAnswerCorrect(): boolean {
+    return this.selectedAnswerId === this.currentQuestion?.correctChoiceId;
+  }
+
+  getCorrectAnswerText(): string {
+    const correct = this.currentQuestion?.choices.find(
+      c => c.id === this.currentQuestion?.correctChoiceId
+    );
+    return correct?.text || '';
+  }
+
+  restart() {
+    this.game.currentQuestionIndex = 0;
+    this.score = 0;
+    this.selectedAnswerId = null;
+    this.showResult = false;
+    this.game.finished = false;
+    this.game.gamePhase = 'question';
+
+    // Reset game in database to sync state
+    this.gameService.resetGame(this.game.id || '');
+
+    this.startTimer();
   }
 
   goBack() {
     this.router.navigate(['/home']);
   }
 
-  restart() {
-    this.currentQuestionIndex = 0;
-    this.score = 0;
-    this.selectedAnswerId = null;
-    this.showResult = false;
-    this.gameFinished = false;
-    this.answers = [];
-    this.startTimer();
+  quitGame() {
+    this.router.navigate(['/home']);
   }
 
-  isAnswerCorrect(choice: Choice): boolean {
-    if (!this.currentQuestion) return false;
-    return choice.id === this.currentQuestion.correctChoiceId;
+  getAnswerStats(choiceId: number): number {
+    if (!this.game?.players) return 0;
+
+    const total = this.game.players.length;
+    const count = this.game.players.filter(
+      (p: any) => p.lastAnswer === choiceId
+    ).length;
+
+    return total ? (count / total) * 100 : 0;
   }
 
-  isSelectedAnswerCorrect(): boolean {
-    if (!this.currentQuestion || this.selectedAnswerId === null) return false;
-    return this.selectedAnswerId === this.currentQuestion.correctChoiceId;
+  getAnswerCount(choiceId: number): number {
+    if (!this.game?.players) return 0;
+    return this.game.players.filter((p: any) => p.lastAnswer === choiceId).length;
   }
 
-  getCorrectAnswerText(): string {
-  if (!this.currentQuestion) return '';
-
-  const correct = this.currentQuestion.choices.find(
-    c => c.id === this.currentQuestion?.correctChoiceId
-  );
-
-  return correct ? correct.text : '';
-}
+  getTotalPlayers(): number {
+    return this.game?.players?.length || 0;
+  }
 }

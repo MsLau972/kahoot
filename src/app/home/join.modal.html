@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Rejoindre une Partie</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="joinForm" (ngSubmit)="joinGame()">
+    <ion-item>
+      <ion-label position="stacked">Code PIN</ion-label>
+      <ion-input formControlName="pin" placeholder="4 à 6 chiffres" type="number"></ion-input>
+    </ion-item>
+    <div *ngIf="joinForm.get('pin')?.touched && joinForm.get('pin')?.invalid" style="color:red">
+      Le PIN doit contenir 4 à 6 chiffres.
+    </div>
+
+    <div *ngIf="errorMessage" style="color:red; margin-top:10px;">
+      {{ errorMessage }}
+    </div>
+
+    <ion-button expand="block" color="primary" type="submit" style="margin-top:20px;">
+      Rejoindre
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" color="medium" type="button" (click)="close()">
+      Annuler
+    </ion-button>
+  </form>
+</ion-content>

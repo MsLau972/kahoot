@@ -3,51 +3,51 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title id="page-title">{{ quiz.title }}</ion-title>
+    <ion-title id="page-title">{{ this.quiz?.title || 'Chargement...' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="quitGame()" color="danger" fill="clear">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content class="ion-padding">
-  @if (quiz && !gameFinished) {
+  @if(this.game.gamePhase === 'question') {
+  @if (this.quiz && !this.game.finished) {
     <!-- Progress Bar -->
     <div class="progress-container">
       <ion-progress-bar
         type="determinate"
-        [value]="progress / 100"
+        [value]="this.progress / 100"
         class="progress-bar"
       ></ion-progress-bar>
       <div class="timer">
-        ⏱ {{ timeLeft }} s
+        ⏱ {{ this.timeLeft }} s
       </div>
       <div class="progress-text">
-        Question {{ currentQuestionIndex + 1 }} / {{ quiz.questions.length }}
-      </div>
-    </div>
-
-    <!-- Score -->
-    <div class="score-container">
-      <div class="score">
-        <strong>Score:</strong> {{ score }} / {{ quiz.questions.length }}
+        Question {{ this.game.currentQuestionIndex + 1 }} / {{ this.quiz?.questions?.length }}
       </div>
     </div>
 
     <!-- Question -->
-    @if (currentQuestion) {
+    @if (this.currentQuestion) {
       <ion-card class="question-card">
         <ion-card-header>
-          <ion-card-title>{{ currentQuestion.text }}</ion-card-title>
+          <ion-card-title>{{ this.currentQuestion.text }}</ion-card-title>
         </ion-card-header>
 
         <ion-card-content>
           <ion-grid>
             <ion-row>
-              @for (choice of currentQuestion.choices; track choice.id) {
+              @for (choice of this.currentQuestion.choices; track choice.id) {
                 <ion-col size="12" size-md="6">
                   <ion-button
                     expand="block"
                     [color]="
                       !showResult
-                        ? 'primary'
+                        ? (selectedAnswerId === choice.id ? 'light' : 'primary')
                         : selectedAnswerId === choice.id &&
                             isAnswerCorrect(choice)
                           ? 'success'
@@ -58,8 +58,11 @@
                               ? 'success'
                               : 'medium'
                     "
-                    [disabled]="showResult"
+                    [disabled]="showResult || timeLeft <= 0"
                     (click)="selectAnswer(choice)"
+                    [class.selected]="
+                      !showResult && selectedAnswerId === choice.id
+                    "
                     [class.correct]="
                       showResult && isAnswerCorrect(choice)
                     "
@@ -88,21 +91,27 @@
                   {{ getCorrectAnswerText() }}
                 </p>
               }
+              <!-- Score -->
+              <div class="score-container">
+                <div class="score">
+                  <strong>Score:</strong> {{ this.score }} / {{ this.quiz?.questions?.length }}
+                </div>
+              </div>
             </div>
 
             <!-- Next Button -->
-            <ion-button
+            <!-- <ion-button
               expand="block"
               color="primary"
               (click)="nextQuestion()"
               class="next-button"
             >
-              @if (currentQuestionIndex < quiz.questions.length - 1) {
+              @if (currentQuestionIndex < (quiz?.questions?.length || 0) - 1) {
                 Question suivante
               } @else {
                 Terminer
               }
-            </ion-button>
+            </ion-button> -->
           }
         </ion-card-content>
       </ion-card>
@@ -110,7 +119,7 @@
   }
 
   <!-- Game Finished Screen -->
-  @if (gameFinished) {
+  @if (this.game.finished) {
     <div class="finish-container">
       <ion-card class="result-card">
         <ion-card-header>
@@ -120,9 +129,9 @@
         <ion-card-content>
           <div class="final-score">
             <h2>Votre score</h2>
-            <p class="big-score">{{ score }} / {{ quiz.questions.length }}</p>
+            <p class="big-score">{{ score }} / {{ quiz?.questions?.length }}</p>
             <p class="percentage">
-              {{ ((score / (quiz.questions.length || 1)) * 100).toFixed(0) }}%
+              {{ ((score / (quiz?.questions?.length || 1)) * 100).toFixed(0) }}%
             </p>
           </div>
 
@@ -148,4 +157,33 @@
       </ion-card>
     </div>
   }
+}
+  @if(this.game.gamePhase === 'result' && this.currentQuestion) {
+  <ion-card class="question-card">
+    <ion-card-header>
+      <ion-card-title>{{ this.currentQuestion.text }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          @for(choice of this.currentQuestion.choices; track choice.id) {
+            <ion-col size="12">
+              <div class="stat-bar-container">
+                <div 
+                  class="stat-bar"
+                  [attr.data-count]="getAnswerCount(choice.id) + '/' + getTotalPlayers()"
+                  [style.width.%]="this.getAnswerStats(choice.id)"
+                  [style.background]="choice.id === this.currentQuestion.correctChoiceId ? 'green' : '#ccc'"
+                >
+                  {{ choice.text }}
+                </div>
+              </div>
+            </ion-col>
+          }
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+}
 </ion-content>
+

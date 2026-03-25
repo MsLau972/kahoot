@@ -33,4 +33,8 @@ export class AuthService {
   isConnected(): User | null {
     return this.auth.currentUser;
   }
+
+  getUser(): User | null {
+    return this.auth.currentUser;
+  }
 }

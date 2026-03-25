@@ -90,7 +90,42 @@ ion-button {
   &.incorrect {
     --background: linear-gradient(135deg,#ff4d4d,#e74c3c);
   }
+
+  &.selected {
+    --background: linear-gradient(135deg,#3498db,#2980b9);
+    color: white;
+  }
 }
+
+/* Stats bars */
+.stat-bar-container {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  padding: 6px;
+  margin: 10px 0;
+}
+
+.stat-bar {
+  position: relative;
+  height: 42px;
+  border-radius: 10px;
+  padding: 10px;
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+
+  &::after {
+    content: attr(data-count);
+    position: absolute;
+    right: 12px;
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+}
+
 
 /* Result message */
 .result-message {
@@ -217,4 +252,20 @@ ion-button {
     font-size: 1.1rem;
   }
 
+}
+
+.stat-bar-container {
+  background: #eee;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  height: 40px;
+  overflow: hidden;
+}
+
+.stat-bar {
+  height: 100%;
+  line-height: 40px;
+  color: #fff;
+  padding-left: 10px;
+  font-weight: bold;
 }

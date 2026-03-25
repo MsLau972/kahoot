@@ -21,6 +21,7 @@ import { QuizService } from '../services/quiz.service';
 import { Quiz } from '../models/quiz';
 import { EditQuizModalComponent } from './edit-quiz.modal';
 import { AuthService } from '../services/auth';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-quiz-detail',
@@ -50,7 +51,8 @@ export class QuizDetailPage implements OnInit {
     private router: Router,
     private quizService: QuizService,
     private modalCtrl: ModalController,
-    private authService: AuthService
+    private authService: AuthService,
+    private gameService: GameService
   ) {}
 
   ngOnInit() {
@@ -69,7 +71,7 @@ export class QuizDetailPage implements OnInit {
     }
 
     const isAuthor = this.quiz?.authorId === user.uid;
-    const isAdmin = user.email === 'admin@example.com'; // ou custom claim admin
+    const isAdmin = user.email === 'admin@example.com';
     if (!isAuthor && !isAdmin) {
       alert("Vous n'êtes pas autorisé à modifier ce quiz.");
       return;
@@ -87,15 +89,16 @@ export class QuizDetailPage implements OnInit {
     await modal.present();
   }
 
-  playGame() {
+  async playGame() {
     const user = this.authService.isConnected();
-  if (!user) {
-    this.router.navigate(['/login']); 
-    return;
-  }
+    if (!user) {
+      this.router.navigate(['/login']); 
+      return;
+    }
 
-  if (this.quiz?.id) {
-    this.router.navigate(['/game', this.quiz.id]);
-  }
+    if (this.quiz?.id) {
+      const result = await this.gameService.createGame(this.quiz.id, user.email || 'Hôte', user.uid);
+      this.router.navigate(['/lobby', result.gameId]);
+    }
   }
 }

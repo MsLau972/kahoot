@@ -32,16 +32,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-button
-    expand="block"
-    color="primary"
-    type="button"
-    aria-label="Ajouter un nouveau quiz"
-    (click)="openAddQuizModal()"
-  >
-    ➕ Ajouter un Quiz
-  </ion-button>
-
   @if(quizzes.length === 0){<ion-item color="medium" role="status">
     <ion-icon name="information-circle" slot="start"></ion-icon>
     <ion-label>
@@ -53,30 +43,39 @@
     <ion-row>
       @for (quiz of quizzes; track quiz.id) {
       <ion-col size="12" size-md="6" size-lg="4">
-        <ion-card>
-          <ion-card-header
-            button
-            tabindex="0"
-            role="button"
-            aria-label="Voir le quiz {{ quiz.title }}"
-            (click)="goToQuizDetail(quiz)"
-            (keydown.enter)="goToQuizDetail(quiz)"
-          >
+        <ion-card
+          button
+          tabindex="0"
+          role="button"
+          aria-label="Voir le quiz {{ quiz.title }}"
+          (click)="goToQuizDetail(quiz)"
+          (keydown.enter)="goToQuizDetail(quiz)"
+        >
+          <ion-card-header>
             <ion-card-title>{{ quiz.title }}</ion-card-title>
           </ion-card-header>
 
           <ion-card-content> {{ quiz.description }} </ion-card-content>
-          <ion-button
-            fill="clear"
-            color="danger"
-            type="button"
-            aria-label="Supprimer le quiz {{ quiz.title }}"
-            (click)="deleteQuiz(quiz.id)"
-            >Supprimer</ion-button
-          >
+            <ion-button
+              fill="clear"
+              color="danger"
+              aria-label="Supprimer le quiz {{ quiz.title }}"
+              (click)="deleteQuiz(quiz.id)"
+            ><ion-icon name="trash" color="danger"></ion-icon>
+            </ion-button>
         </ion-card>
       </ion-col>
       }
     </ion-row>
   </ion-grid>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button
+      color="primary"
+      aria-label="Ajouter un nouveau quiz"
+      (click)="openAddQuizModal()"
+    ><ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

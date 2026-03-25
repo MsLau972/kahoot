@@ -20,7 +20,9 @@ import {
   IonItem,
   IonList,
   IonPopover,
-  IonAvatar, 
+  IonAvatar,
+  IonFab,
+  IonFabButton, 
 } from '@ionic/angular/standalone';
 
 import { QuizService } from '../services/quiz.service';
@@ -29,6 +31,16 @@ import { AddQuizModalComponent } from './add-quiz.modal';
 import { JoinModalComponent } from './join.modal';
 import { AuthService } from '../services/auth';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+
+import { addIcons } from 'ionicons';
+import { addOutline, add, person, trashOutline } from 'ionicons/icons';
+
+addIcons({
+  'add-outline': addOutline,
+  'add': add,
+  'trash': trashOutline,
+  'person': person,
+});
 
 @Component({
   selector: 'app-home',
@@ -53,7 +65,9 @@ import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
     IonItem,
     IonList,
     IonPopover,
-    IonAvatar, 
+    IonAvatar,
+    IonFab,
+    IonFabButton, 
   ],
 })
 export class HomePage implements OnInit {

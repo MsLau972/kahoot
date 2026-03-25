@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ModalController } from '@ionic/angular/standalone';
+import { IonFab, IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 
 import {
   IonHeader,
@@ -26,7 +26,14 @@ import {
 import { Quiz } from '../models/quiz';
 import { QuizService } from '../services/quiz.service';
 import { AuthService } from '../services/auth';
+import { add, checkmark, closeOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
+
+addIcons({  
+  'save': checkmark,
+  'close': closeOutline
+});
 @Component({
   selector: 'app-edit-quiz-modal',
   templateUrl: './edit-quiz.modal.html',
@@ -45,6 +52,9 @@ import { AuthService } from '../services/auth';
     IonRadioGroup,
     IonItem,
     IonText,
+    IonIcon,
+    IonFab,
+    IonFabButton
   ],
 })
 export class EditQuizModalComponent {

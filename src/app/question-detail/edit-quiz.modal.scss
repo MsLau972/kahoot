@@ -1,3 +1,9 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .error-text {
   color: var(--ion-color-danger);
   font-size: 0.9rem;
@@ -5,8 +11,29 @@
 }
 
 .question-block {
-  margin-top: 24px;
+  margin-top: 20px;
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--ion-color-light);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.question-block:hover {
+  transform: translateY(-1px);
+}
+
+ion-input,
+ion-textarea {
+  margin-top: 8px;
+}
+
+ion-item {
+  --background: transparent;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  padding: 6px;
+}
+
+ion-radio:checked + ion-input {
+  font-weight: 600;
 }

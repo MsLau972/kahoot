@@ -30,12 +30,9 @@
 
       @for (question of questions.controls; track i; let i = $index) {
       <div [formGroupName]="i" class="question-block">
-        <ion-text>
-          <h3>Question {{ i + 1 }}</h3>
-        </ion-text>
 
         <ion-input
-          label="Question"
+          label="Question {{ i + 1 }}"
           labelPlacement="stacked"
           formControlName="text"
         ></ion-input>
@@ -81,35 +78,39 @@
         }
 
         <ion-button type="button" size="small" (click)="addChoice(i)">
-          ➕ Ajouter un choix
+          <ion-icon name="add-outline" slot="start"></ion-icon>
+          Ajouter un choix
         </ion-button>
       </div>
       }
     </div>
 
-    <ion-button type="button" expand="block" (click)="addQuestion()">
-      ➕ Ajouter une question
-    </ion-button>
-
-    <ion-button
-      expand="block"
-      color="primary"
-      type="submit"
-      [disabled]="form.invalid"
-    >
-      💾 Enregistrer
+    <ion-button type="button" (click)="addQuestion()">
+      <ion-icon name="add-outline" slot="start"></ion-icon>
+      Ajouter une question
     </ion-button>
     @if(form.invalid){
     <ion-text color="danger"> ⚠️ Le formulaire contient des erreurs. </ion-text>
     }
-    <ion-button
-      expand="block"
-      fill="outline"
-      color="medium"
-      type="button"
-      (click)="close()"
-    >
-      Annuler
-    </ion-button>
+    <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+      <ion-fab-button
+        color="medium"
+        aria-label="Annuler la modification du quiz"
+        (click)="close()"
+      >
+        <ion-icon name="close"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button
+        color="primary"
+        aria-label="Enregistrer les modifications du quiz"
+        (click)="save()"
+        [disabled]="form.invalid"
+      >
+        <ion-icon name="save"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
   </form>
 </ion-content>

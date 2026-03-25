@@ -21,6 +21,7 @@ import { AuthService } from '../services/auth';
 import { Router } from '@angular/router';
 import { StatsService } from '../services/stats-service';
 import { Observable } from 'rxjs';
+import { TopBarComponent } from '../top-bar/top-bar.component';
 
 @Component({
   selector: 'app-account-infos',
@@ -43,7 +44,8 @@ import { Observable } from 'rxjs';
     IonLabel, 
     IonList, 
     IonCardHeader, 
-    IonButtons
+    IonButtons,
+    TopBarComponent,
   ]
 })
 export class AccountInfosPage implements OnInit {

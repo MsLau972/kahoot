@@ -10,11 +10,12 @@ import {
   IonItem,
   IonButton,
   IonBackButton,
-  IonButtons
+  IonButtons,
 } from '@ionic/angular/standalone';
 import { GameService } from '../services/game.service';
 import { AuthService } from '../services/auth';
 import { Observable } from 'rxjs';
+import { TopBarComponent } from '../top-bar/top-bar.component';
 
 @Component({
   selector: 'app-lobby',
@@ -31,6 +32,7 @@ import { Observable } from 'rxjs';
     IonButton,
     IonButtons,
     IonBackButton,
+    TopBarComponent,
   ],
 })
 export class LobbyPage implements OnInit {

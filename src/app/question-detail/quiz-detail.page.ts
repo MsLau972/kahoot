@@ -25,6 +25,7 @@ import { GameService } from '../services/game.service';
 
 import { createOutline, playOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { TopBarComponent } from '../top-bar/top-bar.component';
 
 addIcons({
   'play': playOutline,
@@ -54,6 +55,7 @@ addIcons({
     IonFooter,
     IonFab,
     IonFabButton,
+    TopBarComponent,
   ],
 })
 export class QuizDetailPage implements OnInit {

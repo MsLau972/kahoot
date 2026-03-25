@@ -3,18 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonCard, IonCardContent, IonFab, IonFabButton, IonFooter, ModalController } from '@ionic/angular/standalone';
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonButton,
-  IonText,
   IonIcon,
-  IonBackButton,
-  IonButtons,
 } from '@ionic/angular/standalone';
 
 import { QuizService } from '../services/quiz.service';
@@ -38,21 +28,10 @@ addIcons({
   styleUrls: ['./quiz-detail.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonButton,
-    IonText,
     IonIcon,
-    IonBackButton,
-    IonButtons,
     IonCard,
     IonCardContent, 
-    IonFooter,
     IonFab,
     IonFabButton,
     TopBarComponent,

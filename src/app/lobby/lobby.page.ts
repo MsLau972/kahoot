@@ -2,15 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonList,
   IonItem,
   IonButton,
-  IonBackButton,
-  IonButtons,
 } from '@ionic/angular/standalone';
 import { GameService } from '../services/game.service';
 import { AuthService } from '../services/auth';
@@ -23,15 +18,10 @@ import { TopBarComponent } from '../top-bar/top-bar.component';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonList,
     IonItem,
     IonButton,
-    IonButtons,
-    IonBackButton,
     TopBarComponent,
   ],
 })

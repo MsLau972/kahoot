@@ -86,6 +86,12 @@ export class GamePage implements OnInit {
  ngOnInit() {
     this.game.id = this.route.snapshot.paramMap.get('id')!;
 
+    this.gameService.getGame(this.game.id).subscribe(game => {
+      if (game && !game.started) {
+        this.router.navigate(['/lobby', this.game.id]);
+      }
+    });
+
     this.gameService.getGame(this.game.id).pipe(
       switchMap(game => {
         if (!game) return of(null);
@@ -97,8 +103,8 @@ export class GamePage implements OnInit {
       this.quiz = quiz!;
     });
     if(!this.timer) {
-            this.startTimer();
-          }
+      this.startTimer();
+    }
   }
 
   get currentQuestion(): Question | null {
@@ -203,10 +209,11 @@ export class GamePage implements OnInit {
     this.game.finished = false;
     this.game.gamePhase = 'question';
 
-    // Reset game in database to sync state
+    // Reset game in database to sync state and send all players back to lobby
     this.gameService.resetGame(this.game.id || '');
 
-    this.startTimer();
+    // Redirect host back to lobby
+    this.router.navigate(['/lobby', this.game.id]);
   }
 
   goBack() {

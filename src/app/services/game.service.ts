@@ -145,7 +145,8 @@ export class GameService {
     await updateDoc(gameDoc, { 
       currentQuestionIndex: 0,
       finished: false,
-      gamePhase: 'question'
+      gamePhase: 'question',
+      started: false
     });
   }
 }

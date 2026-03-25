@@ -1,15 +1,72 @@
-.question-item {
-  margin-bottom: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  background: var(--ion-color-light);
+.quiz-header {
+  margin-bottom: 20px;
 }
 
-.choices-list {
-  margin-top: 8px;
-  padding-left: 20px;
+.quiz-header h1 {
+  margin-bottom: 6px;
+}
+
+.quiz-description {
+  color: var(--ion-color-medium);
+  margin-bottom: 10px;
+}
+
+.quiz-meta {
+  display: flex;
+  align-items: center;
+  color: var(--ion-color-medium);
+}
+
+.question-card {
+  margin-bottom: 16px;
+  border-radius: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.question-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.question-card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin-bottom: 6px;
+}
+
+.question-text {
+  font-size: 15px;
+  color: var(--ion-text-color);
+  margin-bottom: 10px;
 }
 
 .choices-list li {
-  margin-bottom: 4px;
+  background: light;
+  padding: 6px 10px;
+}
+
+.choices-list li:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.empty-state {
+  text-align: center;
+  margin-top: 40px;
+  color: var(--ion-color-medium);
+}
+
+.empty-state ion-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+ion-fab-button[color="success"] {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }

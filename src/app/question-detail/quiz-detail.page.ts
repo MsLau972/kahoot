@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalController } from '@ionic/angular/standalone';
+import { IonCard, IonCardContent, IonFab, IonFabButton, IonFooter, ModalController } from '@ionic/angular/standalone';
 
 import {
   IonHeader,
@@ -23,6 +23,14 @@ import { EditQuizModalComponent } from './edit-quiz.modal';
 import { AuthService } from '../services/auth';
 import { GameService } from '../services/game.service';
 
+import { createOutline, playOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
+
+addIcons({
+  'play': playOutline,
+  'edit': createOutline,
+});
+
 @Component({
   selector: 'app-quiz-detail',
   templateUrl: './quiz-detail.page.html',
@@ -41,6 +49,11 @@ import { GameService } from '../services/game.service';
     IonIcon,
     IonBackButton,
     IonButtons,
+    IonCard,
+    IonCardContent, 
+    IonFooter,
+    IonFab,
+    IonFabButton,
   ],
 })
 export class QuizDetailPage implements OnInit {

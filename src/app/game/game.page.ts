@@ -29,6 +29,8 @@ import { Game, GameService } from '../services/game.service';
 import { AuthService } from '../services/auth';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { EmojiReactionsComponent } from '../emoji-reaction/emoji-reaction.component';
+
 @Component({
   selector: 'app-game',
   templateUrl: 'game.page.html',
@@ -51,6 +53,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     IonBackButton,
     IonProgressBar,
     IonIcon,
+    EmojiReactionsComponent
   ],
 })
 export class GamePage implements OnInit {
@@ -64,6 +67,7 @@ export class GamePage implements OnInit {
     finished: false,
     hostUid: '',
     players: [],
+    reactions: [],
   };
 
   quiz!: Quiz;
@@ -187,6 +191,7 @@ export class GamePage implements OnInit {
       this.playerRank = this.computePlayerRank();
 
       this.game.finished = true;
+      this.game.reactions = [];
       this.gameService.finishGame(this.game.id || '');
     }
   }

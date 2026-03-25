@@ -1,0 +1,27 @@
+.emoji-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  pointer-events: none;
+}
+
+.emoji {
+  font-size: 2rem;
+  margin-bottom: 5px;
+  animation: floatUp 6s linear forwards;
+}
+
+ion-fab-button {
+  font-size: 2rem;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}

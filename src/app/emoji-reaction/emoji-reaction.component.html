@@ -1,0 +1,17 @@
+<!-- Bouton -->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="sendReaction()">
+    😄
+  </ion-fab-button>
+</ion-fab>
+
+<!-- Emojis -->
+<div class="emoji-container">
+  <div
+    *ngFor="let r of reactions"
+    class="emoji"
+    [style.opacity]="getOpacity(r.timestamp)"
+  >
+    {{ r.emoji }}
+  </div>
+</div>

@@ -23,6 +23,11 @@ export interface Game {
   finished: boolean;
   hostUid: string;
   players: any[];
+  reactions: {
+        id: string;
+        emoji: string;
+        timestamp: number;
+      }[];
 }
 
 @Injectable({
@@ -137,7 +142,7 @@ export class GameService {
     if (!gameId) return;
 
     const gameDoc = doc(this.firestore, `games/${gameId}`);
-    await updateDoc(gameDoc, { finished: true });
+    await updateDoc(gameDoc, { finished: true, reactions: [] });
   }
 
   async updateGameProgress(gameId: string, currentQuestionIndex: number) {
@@ -157,5 +162,23 @@ export class GameService {
       gamePhase: 'question',
       started: false
     });
+  }
+
+  async sendReaction(gameId: string, reaction: any) {
+    const gameDoc = doc(this.firestore, `games/${gameId}`);
+    const snap = await getDoc(gameDoc);
+    if (!snap.exists()) return;
+
+    const game = snap.data() as any;
+
+    const reactions = [...(game.reactions || [])];
+
+    reactions.push({
+      id: Date.now(),
+      ...reaction,
+      timestamp: Date.now()
+    });
+
+    await updateDoc(gameDoc, { reactions });
   }
 }

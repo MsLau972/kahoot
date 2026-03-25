@@ -31,13 +31,6 @@
       </div>
     </div>
 
-    <!-- Score -->
-    <div class="score-container">
-      <div class="score">
-        <strong>Score:</strong> {{ this.score }} / {{ this.quiz?.questions?.length }}
-      </div>
-    </div>
-
     <!-- Question -->
     @if (this.currentQuestion) {
       <ion-card class="question-card">
@@ -54,7 +47,7 @@
                     expand="block"
                     [color]="
                       !showResult
-                        ? 'primary'
+                        ? (selectedAnswerId === choice.id ? 'light' : 'primary')
                         : selectedAnswerId === choice.id &&
                             isAnswerCorrect(choice)
                           ? 'success'
@@ -67,6 +60,9 @@
                     "
                     [disabled]="showResult || timeLeft <= 0"
                     (click)="selectAnswer(choice)"
+                    [class.selected]="
+                      !showResult && selectedAnswerId === choice.id
+                    "
                     [class.correct]="
                       showResult && isAnswerCorrect(choice)
                     "
@@ -95,6 +91,12 @@
                   {{ getCorrectAnswerText() }}
                 </p>
               }
+              <!-- Score -->
+              <div class="score-container">
+                <div class="score">
+                  <strong>Score:</strong> {{ this.score }} / {{ this.quiz?.questions?.length }}
+                </div>
+              </div>
             </div>
 
             <!-- Next Button -->
@@ -104,7 +106,7 @@
               (click)="nextQuestion()"
               class="next-button"
             >
-              @if (currentQuestionIndex < quiz.questions.length - 1) {
+              @if (currentQuestionIndex < (quiz?.questions?.length || 0) - 1) {
                 Question suivante
               } @else {
                 Terminer
@@ -169,10 +171,11 @@
               <div class="stat-bar-container">
                 <div 
                   class="stat-bar"
+                  [attr.data-count]="getAnswerCount(choice.id) + '/' + getTotalPlayers()"
                   [style.width.%]="this.getAnswerStats(choice.id)"
                   [style.background]="choice.id === this.currentQuestion.correctChoiceId ? 'green' : '#ccc'"
                 >
-                  {{ choice.text }} - {{ this.getAnswerStats(choice.id) | number:'1.0-0' }}%
+                  {{ choice.text }}
                 </div>
               </div>
             </ion-col>

@@ -127,6 +127,14 @@ export class GamePage implements OnInit {
   async finishQuestion() {
     this.showResult = true;
 
+    // Calculate score based on final selected answer
+    if (this.selectedAnswerId !== null) {
+      const selectedChoice = this.currentQuestion?.choices.find(c => c.id === this.selectedAnswerId);
+      if (selectedChoice && this.isAnswerCorrect(selectedChoice)) {
+        this.score++;
+      }
+    }
+
     const user = this.authService.isConnected();
     if (user && this.selectedAnswerId !== null) {
       await this.gameService.submitAnswer(this.game.id || '', user.uid, this.selectedAnswerId, this.score);
@@ -137,13 +145,8 @@ export class GamePage implements OnInit {
 
   selectAnswer(choice: Choice) {
     if (this.game.gamePhase !== 'question') return;
-    if (this.selectedAnswerId !== null) return;
 
     this.selectedAnswerId = choice.id;
-
-    if (this.isAnswerCorrect(choice)) {
-      this.score++;
-    }
   }
 
   nextQuestion() {
@@ -214,5 +217,14 @@ export class GamePage implements OnInit {
     ).length;
 
     return total ? (count / total) * 100 : 0;
+  }
+
+  getAnswerCount(choiceId: number): number {
+    if (!this.game?.players) return 0;
+    return this.game.players.filter((p: any) => p.lastAnswer === choiceId).length;
+  }
+
+  getTotalPlayers(): number {
+    return this.game?.players?.length || 0;
   }
 }

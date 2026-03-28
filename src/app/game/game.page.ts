@@ -77,6 +77,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   score = 0;
   showResult = false;
   playerRank: number | null = null;
+  shuffledChoices: Choice[] = [];
 
   timeLeft = 10;
   timer: any;
@@ -94,7 +95,6 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
  ngOnInit() {
     this.game.id = this.route.snapshot.paramMap.get('id')!;
 
-    // Mark that we entered the game page
     localStorage.removeItem(`leftGame_${this.game.id}`);
 
     this.gameService.getGame(this.game.id)
@@ -115,6 +115,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
       takeUntil(this.destroy$)
     ).subscribe(quiz => {
       this.quiz = quiz!;
+      this.shuffleChoices();
     });
     if(!this.timer) {
       this.startTimer();
@@ -128,6 +129,21 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   get progress(): number {
     if (!this.quiz) return 0;
     return ((this.game.currentQuestionIndex + 1) / this.quiz.questions.length) * 100;
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  private shuffleChoices(): void {
+    if (this.currentQuestion?.choices) {
+      this.shuffledChoices = this.shuffleArray(this.currentQuestion.choices);
+    }
   }
 
   startTimer() {
@@ -147,7 +163,6 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   async finishQuestion() {
     this.showResult = true;
 
-    // Calculate score based on final selected answer
     if (this.selectedAnswerId !== null) {
       const selectedChoice = this.currentQuestion?.choices.find(c => c.id === this.selectedAnswerId);
       if (selectedChoice && this.isAnswerCorrect(selectedChoice)) {
@@ -171,7 +186,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
 
   nextQuestion() {
     if (!this.quiz?.questions) {
-      return; // Quiz not loaded yet
+      return;
     }
 
     const totalQuestions = this.quiz.questions.length;
@@ -183,6 +198,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
       this.showResult = false;
 
       this.gameService.updateGameProgress(this.game.id || '', this.game.currentQuestionIndex);
+      this.shuffleChoices();
       this.startTimer();
     } else {
       const user = this.authService.isConnected();
@@ -196,7 +212,6 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
         );
       }
 
-      // Compute player rank before finishing
       this.playerRank = this.computePlayerRank();
 
       this.game.finished = true;
@@ -227,25 +242,21 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
     this.showResult = false;
     this.game.finished = false;
     this.game.gamePhase = 'question';
+    this.shuffleChoices();
 
-    // Reset game in database to sync state and send all players back to lobby
     this.gameService.resetGame(this.game.id || '');
 
-    // Clear the flag so we can rejoin automatically when game restarts
     localStorage.removeItem(`leftGame_${this.game.id}`);
 
-    // Redirect host back to lobby
     this.router.navigate(['/lobby', this.game.id]);
   }
 
   goBack() {
-    // Mark that we voluntarily left the game
     localStorage.setItem(`leftGame_${this.game.id}`, 'true');
     this.router.navigate(['/home']);
   }
 
   quitGame() {
-    // Mark that we voluntarily left the game
     localStorage.setItem(`leftGame_${this.game.id}`, 'true');
     this.router.navigate(['/home']);
   }
@@ -271,9 +282,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   }
 
   ngOnDestroy() {
-    // Clean up when leaving game page
     clearInterval(this.timer);
-    // Unsubscribe from all subscriptions
     this.destroy$.next();
     this.destroy$.complete();
   }

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { switchMap, of } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { switchMap, of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { ViewWillLeave } from '@ionic/angular/standalone';
 import {
   IonHeader,
   IonToolbar,
@@ -56,7 +58,7 @@ import { EmojiReactionsComponent } from '../emoji-reaction/emoji-reaction.compon
     EmojiReactionsComponent
   ],
 })
-export class GamePage implements OnInit {
+export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   game: Game = {
     id: '',
     quizId: '',
@@ -78,6 +80,7 @@ export class GamePage implements OnInit {
 
   timeLeft = 10;
   timer: any;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -91,11 +94,16 @@ export class GamePage implements OnInit {
  ngOnInit() {
     this.game.id = this.route.snapshot.paramMap.get('id')!;
 
-    this.gameService.getGame(this.game.id).subscribe(game => {
-      if (game && !game.started) {
-        this.router.navigate(['/lobby', this.game.id]);
-      }
-    });
+    // Mark that we entered the game page
+    localStorage.removeItem(`leftGame_${this.game.id}`);
+
+    this.gameService.getGame(this.game.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(game => {
+        if (game && !game.started) {
+          this.router.navigate(['/lobby', this.game.id]);
+        }
+      });
 
     this.gameService.getGame(this.game.id).pipe(
       switchMap(game => {
@@ -103,7 +111,8 @@ export class GamePage implements OnInit {
         this.game = game;
         this.game.gamePhase = game.gamePhase ?? 'question';
         return this.quizService.get(game.quizId);
-      })
+      }),
+      takeUntil(this.destroy$)
     ).subscribe(quiz => {
       this.quiz = quiz!;
     });
@@ -222,15 +231,22 @@ export class GamePage implements OnInit {
     // Reset game in database to sync state and send all players back to lobby
     this.gameService.resetGame(this.game.id || '');
 
+    // Clear the flag so we can rejoin automatically when game restarts
+    localStorage.removeItem(`leftGame_${this.game.id}`);
+
     // Redirect host back to lobby
     this.router.navigate(['/lobby', this.game.id]);
   }
 
   goBack() {
+    // Mark that we voluntarily left the game
+    localStorage.setItem(`leftGame_${this.game.id}`, 'true');
     this.router.navigate(['/home']);
   }
 
   quitGame() {
+    // Mark that we voluntarily left the game
+    localStorage.setItem(`leftGame_${this.game.id}`, 'true');
     this.router.navigate(['/home']);
   }
 
@@ -252,6 +268,20 @@ export class GamePage implements OnInit {
 
   getTotalPlayers(): number {
     return this.game?.players?.length || 0;
+  }
+
+  ngOnDestroy() {
+    // Clean up when leaving game page
+    clearInterval(this.timer);
+    // Unsubscribe from all subscriptions
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  ionViewWillLeave() {
+    localStorage.setItem(`leftGame_${this.game.id}`, 'true');
+    clearInterval(this.timer);
+    this.destroy$.next();
   }
 
   private computePlayerRank(): number | null {

@@ -94,7 +94,7 @@
               <!-- Score -->
               <div class="score-container">
                 <div class="score">
-                  <strong>Score:</strong> {{ this.score }} / {{ this.quiz?.questions?.length }}
+                  <strong>Score:</strong> {{ this.score }} pts
                 </div>
               </div>
             </div>
@@ -129,9 +129,9 @@
         <ion-card-content>
           <div class="final-score">
             <h2>Votre score</h2>
-            <p class="big-score">{{ score }} / {{ quiz?.questions?.length }}</p>
+            <p class="big-score">{{ score }} pts</p>
             <p class="percentage">
-              {{ ((score / (quiz?.questions?.length || 1)) * 100).toFixed(0) }}%
+              {{ ((score / (1000 * (quiz?.questions?.length || 1))) * 100).toFixed(0) }}%
             </p>
             <p *ngIf="playerRank !== null" class="position">
               Position : {{ playerRank }} / {{ game?.players?.length || 0 }}

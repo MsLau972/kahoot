@@ -78,6 +78,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   showResult = false;
   playerRank: number | null = null;
   shuffledChoices: Choice[] = [];
+  timeSpent = 0;
 
   timeLeft = 10;
   timer: any;
@@ -163,10 +164,13 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
   async finishQuestion() {
     this.showResult = true;
 
+    let pointsEarned = 0;
+
     if (this.selectedAnswerId !== null) {
       const selectedChoice = this.currentQuestion?.choices.find(c => c.id === this.selectedAnswerId);
       if (selectedChoice && this.isAnswerCorrect(selectedChoice)) {
-        this.score++;
+        pointsEarned = Math.max(0, (this.timeLeft) * 100);
+        this.score += pointsEarned;
       }
     }
 
@@ -182,6 +186,8 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
     if (this.game.gamePhase !== 'question') return;
 
     this.selectedAnswerId = choice.id;
+    console.log(this.timeLeft);
+    this.score += this.isAnswerCorrect(choice) ? Math.max(0, ((this.timeLeft) * 100)) : 0;
   }
 
   nextQuestion() {
@@ -242,6 +248,7 @@ export class GamePage implements OnInit, OnDestroy, ViewWillLeave {
     this.showResult = false;
     this.game.finished = false;
     this.game.gamePhase = 'question';
+    this.timeSpent = 0;
     this.shuffleChoices();
 
     this.gameService.resetGame(this.game.id || '');
